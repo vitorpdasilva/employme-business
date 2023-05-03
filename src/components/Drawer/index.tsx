@@ -1,12 +1,24 @@
-import { styled } from '@mui/material/styles'
-import MuiDrawer from '@mui/material/Drawer';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import PeopleIcon from '@mui/icons-material/People'
+import SettingsIcon from '@mui/icons-material/Settings'
+import WorkIcon from '@mui/icons-material/Work'
 import { Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material'
-import WorkIcon from '@mui/icons-material/Work';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import PeopleIcon from '@mui/icons-material/People';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import { useState } from 'react'
+import MuiDrawer from '@mui/material/Drawer'
+import { styled } from '@mui/material/styles'
+import { ReactNode, useState } from 'react'
+
+type MenuItems = {
+  name: string;
+  icon: ReactNode;
+  path: string;
+}
+const menuItems: MenuItems[] = [
+    { name: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { name: 'Jobs', icon: <WorkIcon />, path: '/jobs' },
+  { name: 'Candidates', icon: <PeopleIcon />, path: '/candidates' },
+  { name: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+];
 
 const drawerWidth = 240;
 
@@ -59,30 +71,14 @@ export const DrawerNav = () => {
       </Toolbar>
       <Divider />
       <List component="nav">
-        <ListItemButton>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <WorkIcon />
-          </ListItemIcon>
-          <ListItemText primary="Jobs" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Candidates" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Settings" />
-        </ListItemButton>
+        {menuItems.map((item) => {
+          return (
+            <ListItemButton key={item.name} component="a" href={item.path}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.name} />
+            </ListItemButton>
+          );
+        })}
       </List>
     </Drawer>
   )
