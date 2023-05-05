@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NODE_ENV === 'production' ? 'prod-url/graphql' : 'http://localhost:3050/api'
+const BASE_URL = process.env.NODE_ENV === 'production' ? 'prod-url/graphql' : 'http://localhost:3500/api'
 
 type RequestMode = 'navigate' | 'same-origin' | 'no-cors' | 'cors'
 type RequestCache = 'default' | 'no-store' | 'reload' | 'no-cache' | 'force-cache' | 'only-if-cached'
@@ -74,3 +74,4 @@ const fetchApi = async ({
 }
 
 export { fetchApi, BASE_URL }
+
