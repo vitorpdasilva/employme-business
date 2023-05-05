@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, MenuItem, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 const Create = () => {
@@ -8,8 +8,9 @@ const Create = () => {
   return (
     <Box>
       <Typography variant="h3">Create Job</Typography>
+
       <Divider sx={{ my: 3 }} />
-      <form>
+      <form onSubmit={handleSubmit(handleChange)}>
         <Grid container spacing={0}>
           <Grid item xs={12} md={3}>
             <Typography variant="subtitle1">Job Title</Typography>
@@ -31,7 +32,6 @@ const Create = () => {
               defaultValue={''}
               label="Where are you currently located?"
               inputProps={register('currentLocation')}
-              onChange={handleSubmit(handleChange)}
             >
               {Array.from({ length: 10 }).map((item, index) => (
                 <MenuItem key={item as number} value={index + 1}>
@@ -41,6 +41,10 @@ const Create = () => {
             </TextField>
           </Grid>
         </Grid>
+        <Divider sx={{ my: 3 }} />
+        <Button variant="contained" type="submit">
+          Next
+        </Button>
       </form>
     </Box>
   )
