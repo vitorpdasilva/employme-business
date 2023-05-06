@@ -1,7 +1,9 @@
 import { InputCurrency } from '@/components'
 import { CountriesList, countriesList, currencyList } from '@/constants'
 import { Box, Button, Divider, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { fetchApi } from 'client'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 type FormValues = {
   title: string
@@ -20,6 +22,8 @@ type FormValues = {
 }
 
 const Create = () => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
       title: '',
@@ -38,22 +42,23 @@ const Create = () => {
     },
   })
 
-  const handleChange = async (data: FormValues, event: any) => {
-    event.preventDefault()
-    console.log({ data })
-    try {
-      const res = await fetchApi({ url: '/job', body: data })
-      console.log({ res })
-    } catch (error) {
-      console.log({ error })
-    }
-  }
+  const { mutate, isLoading } = useMutation ({
+    mutationFn: async (data: FormValues) => await fetchApi({ url: '/job', body: data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['jobs'])
+      router.push('/jobs')
+      
+    },
+  })
+  
+  const onSubmit = (data: FormValues) => mutate(data)
+  
   return (
     <Box>
       <Typography variant="h3">Create Job</Typography>
 
       <Divider sx={{ my: 3 }} />
-      <form onSubmit={handleSubmit(handleChange)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={0}>
           <Grid item xs={12} md={3}>
             <Typography variant="h6">Title</Typography>
@@ -203,7 +208,7 @@ const Create = () => {
           </Grid>
         </Grid>
         <Divider sx={{ my: 3 }} />
-        <Button variant="contained" type='submit' size="large">
+        <Button disabled={isLoading} variant="contained" type='submit' size="large">
           Next
         </Button>
       </form>
