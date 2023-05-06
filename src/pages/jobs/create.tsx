@@ -1,12 +1,53 @@
 import { InputCurrency } from '@/components'
 import { CountriesList, countriesList, currencyList } from '@/constants'
 import { Box, Button, Divider, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { fetchApi } from 'client'
 import { useForm } from 'react-hook-form'
+type FormValues = {
+  title: string
+  description: string
+  locationType: string
+  location: {
+    country: string
+    city: string
+  }
+  salary: {
+    currency: string
+    period: string
+    from: string
+    to: string
+  }
+}
 
 const Create = () => {
-  const { register, handleSubmit } = useForm<any>()
+  const { register, handleSubmit, setValue } = useForm<FormValues>({
+    defaultValues: {
+      title: '',
+      description: '',
+      locationType: '',
+      location: {
+        country: '',
+        city: '',
+      },
+      salary: {
+        currency: '',
+        period: '',
+        from: '0',
+        to: '0',
+      },
+    },
+  })
 
-  const handleChange = () => {}
+  const handleChange = async (data: FormValues, event: any) => {
+    event.preventDefault()
+    console.log({ data })
+    try {
+      const res = await fetchApi({ url: '/job', body: data })
+      console.log({ res })
+    } catch (error) {
+      console.log({ error })
+    }
+  }
   return (
     <Box>
       <Typography variant="h3">Create Job</Typography>
@@ -67,7 +108,7 @@ const Create = () => {
           </Grid>
           <Grid item xs={12} md={1} marginLeft={2}>
             <TextField
-              label="Location Type"
+              label="Country"
               select
               fullWidth
               margin="normal"
@@ -102,7 +143,7 @@ const Create = () => {
           </Grid>
           <Grid item xs={12} md={1} marginLeft={2}>
             <TextField
-              label="Country"
+              label="Currency type"
               select
               fullWidth
               margin="normal"
@@ -142,13 +183,7 @@ const Create = () => {
               margin="normal"
               onChange={(e) => {
                 const value = e.target.value
-                console.log({ value })
-                // setSalaryObj({
-                //   name: 'salary',
-                //   values: {
-                //     amount: value,
-                //   },
-                // })
+                setValue('salary.from', value)
               }}
             />
           </Grid>
@@ -162,19 +197,13 @@ const Create = () => {
               margin="normal"
               onChange={(e) => {
                 const value = e.target.value
-                console.log({ value })
-                // setSalaryObj({
-                //   name: 'salary',
-                //   values: {
-                //     amount: value,
-                //   },
-                // })
+                setValue('salary.to', value)
               }}
             />
           </Grid>
         </Grid>
         <Divider sx={{ my: 3 }} />
-        <Button variant="contained" type="submit" size="large">
+        <Button variant="contained" type='submit' size="large">
           Next
         </Button>
       </form>
