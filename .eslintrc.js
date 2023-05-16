@@ -13,7 +13,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    semi: ["error", 'never'],
+    semi: ['error', 'never'],
     quotes: ['error', 'single'],
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
@@ -21,7 +21,8 @@ module.exports = {
     'max-len': ['error', { code: 120, ignoreUrls: true, ignoreComments: true }],
     'eol-last': ['error', 'always'],
     'object-curly-spacing': ['error', 'always'],
-    'react/no-unescaped-entities': 0
+    'react/no-unescaped-entities': 0,
+    'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
   },
   extends: ['eslint:recommended', 'plugin:react/recommended', 'prettier'],
   plugins: ['react', '@typescript-eslint', 'prettier'],

@@ -1,24 +1,10 @@
 import { InputCurrency } from '@/components'
 import { CountriesList, countriesList, currencyList } from '@/constants'
 import { LoadingButton as Button } from '@mui/lab'
-import {
-  Box,
-  Chip,
-  Divider,
-  Grid,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Theme,
-  Typography,
-  useTheme,
-} from '@mui/material'
+import { Box, Chip, Divider, Grid, MenuItem, OutlinedInput, Select, TextField, Typography } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchApi } from 'client'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 type FormValues = {
@@ -35,6 +21,7 @@ type FormValues = {
     from: string
     to: string
   }
+  tags: string[]
 }
 // todo: break down this component into smaller chunks
 type SkillList = {
@@ -42,29 +29,9 @@ type SkillList = {
   name: string
 }
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-}
-
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
-  }
-}
-
 const Create = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const theme = useTheme()
-  const [personName, setPersonName] = useState<string[]>([])
 
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
@@ -81,6 +48,7 @@ const Create = () => {
         from: '0',
         to: '0',
       },
+      tags: [],
     },
   })
 
@@ -98,16 +66,8 @@ const Create = () => {
 
   const onSubmit = (data: FormValues) => mutate(data)
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    )
-  }
   if (skillListLoading) return <>...</>
+
   return (
     <Box>
       <Typography variant="h3">Create Job</Typography>
@@ -122,7 +82,13 @@ const Create = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} marginLeft={2}>
-            <TextField required fullWidth variant="outlined" label="Job Title" inputProps={register('title')} />
+            <TextField
+              required
+              fullWidth
+              variant="outlined"
+              label="Job Title"
+              inputProps={register('title', { required: true })}
+            />
           </Grid>
         </Grid>
         <Divider sx={{ my: 3 }} />
@@ -139,7 +105,7 @@ const Create = () => {
               margin="normal"
               defaultValue=""
               minRows={4}
-              inputProps={register('description')}
+              inputProps={register('description', { required: true })}
             />
           </Grid>
         </Grid>
@@ -159,7 +125,7 @@ const Create = () => {
               margin="normal"
               defaultValue=""
               minRows={4}
-              inputProps={register('locationType')}
+              inputProps={register('locationType', { required: true })}
             >
               <MenuItem value="remote">Remote</MenuItem>
               <MenuItem value="hybrid">Hybrid</MenuItem>
@@ -173,7 +139,7 @@ const Create = () => {
               fullWidth
               margin="normal"
               defaultValue=""
-              inputProps={register('location.country')}
+              inputProps={register('location.country', { required: true })}
             >
               {countriesList.map((country: CountriesList) => (
                 <MenuItem key={country.name} value={country.name}>
@@ -191,7 +157,7 @@ const Create = () => {
               fullWidth
               margin="normal"
               defaultValue=""
-              inputProps={register('location.city')}
+              inputProps={register('location.city', { required: true })}
             />
           </Grid>
         </Grid>
@@ -208,7 +174,7 @@ const Create = () => {
               fullWidth
               margin="normal"
               defaultValue=""
-              inputProps={register('salary.currency')}
+              inputProps={register('salary.currency', { required: true })}
             >
               {currencyList.map((currency) => (
                 <MenuItem key={currency.name} value={currency.value}>
@@ -224,7 +190,7 @@ const Create = () => {
               fullWidth
               margin="normal"
               defaultValue=""
-              inputProps={register('salary.period')}
+              inputProps={register('salary.period', { required: true })}
             >
               {['annual', 'monthly', 'weekly', 'daily', 'hourly'].map((period) => (
                 <MenuItem key={period} value={period}>
@@ -271,20 +237,20 @@ const Create = () => {
           <Grid item xs={12} md={4} marginLeft={2}>
             <Select
               multiple
-              defaultValue={personName}
-              input={<OutlinedInput label="something" />}
-              onChange={handleChange}
+              defaultValue={[]}
+              input={<OutlinedInput label="skill" />}
+              onChange={(e) => setValue('tags', e.target.value as string[])}
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {(selected as unknown as string[]).map((value: string) => (
+                  {(selected as string[]).map((value: string) => (
                     <Chip key={value} label={value} />
                   ))}
                 </Box>
               )}
-              MenuProps={MenuProps}
+              sx={{ minWidth: 200 }}
             >
-              {data.skillList.map(({ name }: SkillList) => (
-                <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+              {data?.skillList.map(({ name }: SkillList) => (
+                <MenuItem key={name} value={name}>
                   {name}
                 </MenuItem>
               ))}
