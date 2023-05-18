@@ -1,4 +1,5 @@
 import { DrawerNav } from '@/components/Drawer'
+import { useIsAuthenticated } from '@/hooks'
 import { Box, CssBaseline } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -9,13 +10,13 @@ const queryClient = new QueryClient()
 
 export default function App({ Component, pageProps }: AppProps) {
   const mdTheme = createTheme()
-
+  const { isAuthenticated } = useIsAuthenticated()
   return (
     <ThemeProvider theme={mdTheme}>
       <QueryClientProvider client={queryClient}>
         <Box sx={{ display: 'flex', height: '100vh' }}>
           <CssBaseline />
-          <DrawerNav />
+          {isAuthenticated && <DrawerNav />}
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Component {...pageProps} />
           </Box>

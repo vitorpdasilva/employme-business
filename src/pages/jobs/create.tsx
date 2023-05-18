@@ -7,23 +7,28 @@ import { fetchApi } from 'client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
+type Salary = {
+  currency: string
+  period: string
+  from: string
+  to: string
+}
+
+type LocationType = 'in-person' | 'remote'
+
 type FormValues = {
   title: string
   description: string
-  locationType: string
+  locationType: LocationType
   location: {
     country: string
     city: string
   }
-  salary: {
-    currency: string
-    period: string
-    from: string
-    to: string
-  }
+  salary: Salary
   tags: string[]
 }
 // todo: break down this component into smaller chunks
+
 type SkillList = {
   id: string
   name: string
@@ -35,16 +40,16 @@ const Create = () => {
 
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
-      title: '',
-      description: '',
-      locationType: '',
+      title: undefined,
+      description: undefined,
+      locationType: 'remote',
       location: {
-        country: '',
-        city: '',
+        country: undefined,
+        city: undefined,
       },
       salary: {
-        currency: '',
-        period: '',
+        currency: undefined,
+        period: undefined,
         from: '0',
         to: '0',
       },
