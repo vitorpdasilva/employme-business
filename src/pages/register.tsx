@@ -28,7 +28,7 @@ const resolver: Resolver<Credentials> = async (values) => {
   }
 }
 
-const Login = () => {
+const Login = (): JSX.Element => {
   const { register, handleSubmit } = useForm<Credentials>({ resolver })
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const setUser = userDataStore((state: any) => state.setUser)
