@@ -35,7 +35,7 @@ const fetchApi = async ({
   headers = {
     'Content-Type': 'application/json',
   },
-}: FetchApiProps) => {
+}: FetchApiProps): Promise<void> => {
   const token = window.localStorage.getItem('token')
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
@@ -74,4 +74,3 @@ const fetchApi = async ({
 }
 
 export { fetchApi, BASE_URL }
-
