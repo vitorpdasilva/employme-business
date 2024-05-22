@@ -1,11 +1,11 @@
-import { countriesList, CountriesList } from '@/constants'
-import { useIsAuthenticated } from '@/hooks'
-import { userDataStore } from '@/stores'
+import { countriesList, CountriesList } from '~/constants'
+import { useIsAuthenticated } from '~/hooks'
+import { userStore } from '~/stores'
 import { Alert, Avatar, Box, Button, Grid, Link, MenuItem, Paper, TextField, Typography } from '@mui/material'
 import { ErrorResponse, fetchApi } from 'client'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Resolver, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 type Credentials = {
   companyName: string
@@ -15,23 +15,10 @@ type Credentials = {
   }
 }
 
-const resolver: Resolver<Credentials> = async (values) => {
-  return {
-    values: values.companyName ? values : {},
-    errors: !values.companyName
-      ? {
-        companyName: { type: 'required', message: 'company name is required' },
-        adminEmail: { type: 'required', message: 'admin email is required' },
-        location: { type: 'required', message: 'location is required' },
-      }
-      : {},
-  }
-}
-
 const Login = (): JSX.Element => {
-  const { register, handleSubmit } = useForm<Credentials>({ resolver })
+  const { register, handleSubmit } = useForm<Credentials>()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const setUser = userDataStore((state: any) => state.setUser)
+  const setUser = userStore((state) => state.setUser)
   const { isAuthenticated } = useIsAuthenticated()
   const router = useRouter()
 
@@ -50,8 +37,8 @@ const Login = (): JSX.Element => {
     }
 
     try {
-      const { user, token } = await fetchApi({ url: '/register', body })
-      setUser(user, token)
+      const { user } = await fetchApi({ url: '/register', body })
+      setUser(user)
       router.push('/')
     } catch (error: any) {
       setErrorMessage(error?.message as ErrorResponse['message'])

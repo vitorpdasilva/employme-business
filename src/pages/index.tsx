@@ -6,9 +6,9 @@ import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
-function Copyright(props: any) {
+function Copyright(): JSX.Element {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="#">
         EMO ?!
@@ -19,7 +19,7 @@ function Copyright(props: any) {
   )
 }
 
-function DashboardContent() {
+function DashboardContent(): JSX.Element {
   return (
     <>
       <Box
@@ -61,13 +61,13 @@ function DashboardContent() {
               <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}></Paper>
             </Grid>
           </Grid>
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright />
         </Container>
       </Box>
     </>
   )
 }
 
-export default function Dashboard() {
+export default function Dashboard(): JSX.Element {
   return <DashboardContent />
 }

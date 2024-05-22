@@ -4,13 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchApi } from 'client'
 import Link from 'next/link'
 
-const Jobs = () => {
+const Jobs = (): JSX.Element => {
   const jobsQuery = useQuery({
     queryKey: ['jobs'],
     queryFn: async () => await fetchApi({ url: '/job', method: 'GET' }),
   })
-  console.log({ jobsQuery })
-  
+
   if (jobsQuery.isLoading) return <div>Loading...</div>
   if (jobsQuery.isError) return <div>Error...</div>
   return (
@@ -19,22 +18,27 @@ const Jobs = () => {
       <Link href="/jobs/create">
         <Button variant="contained">Create Job</Button>
       </Link>
-      <DataGrid 
+      <DataGrid
         rows={jobsQuery.data || []}
         columns={[
           { field: 'title', headerName: 'Title', flex: 1 },
           { field: 'description', headerName: 'Description', flex: 1 },
           { field: 'locationType', headerName: 'Location Type', flex: 1 },
-          { field: 'location.country', headerName: 'Country', flex: 1, 
-            renderCell: (params: GridRenderCellParams) => <strong>{params.row.location.country}</strong> },
-          { field: 'applicants', headerName: 'Applicants', 
+          {
+            field: 'location.country',
+            headerName: 'Country',
+            flex: 1,
+            renderCell: (params: GridRenderCellParams) => <strong>{params.row.location.country}</strong>,
+          },
+          {
+            field: 'applicants',
+            headerName: 'Applicants',
             valueGetter: (params: GridValueGetterParams) => params.row.applicants.length,
             flex: 1,
           },
         ]}
         autoHeight
         pageSizeOptions={[5, 10, 20]}
-        
       />
     </div>
   )

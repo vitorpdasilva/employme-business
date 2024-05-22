@@ -1,10 +1,22 @@
-import { InputCurrency } from '@/components'
-import { CountriesList, countriesList, currencyList } from '@/constants'
+import { InputCurrency } from '~/components'
+import { CountriesList, countriesList, currencyList } from '~/constants'
 import { LoadingButton as Button } from '@mui/lab'
-import { Box, Chip, Divider, Grid, MenuItem, OutlinedInput, Select, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  InputBaseComponentProps,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchApi } from 'client'
 import { useRouter } from 'next/router'
+import { ElementType, ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 
 type Salary = {
@@ -34,7 +46,7 @@ type SkillList = {
   name: string
 }
 
-const Create = () => {
+const Create = (): JSX.Element => {
   const queryClient = useQueryClient()
   const router = useRouter()
 
@@ -69,7 +81,7 @@ const Create = () => {
     },
   })
 
-  const onSubmit = (data: FormValues) => mutate(data)
+  const onSubmit = (data: FormValues): void => mutate(data)
 
   if (skillListLoading) return <>...</>
 
@@ -208,11 +220,11 @@ const Create = () => {
             <TextField
               label="From"
               InputProps={{
-                inputComponent: InputCurrency as any,
+                inputComponent: InputCurrency as unknown as ElementType<InputBaseComponentProps>,
               }}
               defaultValue={''}
               margin="normal"
-              onChange={(e) => {
+              onChange={(e): void => {
                 const value = e.target.value
                 setValue('salary.from', value)
               }}
@@ -222,11 +234,11 @@ const Create = () => {
             <TextField
               label="To"
               InputProps={{
-                inputComponent: InputCurrency as any,
+                inputComponent: InputCurrency as unknown as ElementType<InputBaseComponentProps>,
               }}
               defaultValue={''}
               margin="normal"
-              onChange={(e) => {
+              onChange={(e): void => {
                 const value = e.target.value
                 setValue('salary.to', value)
               }}
@@ -244,8 +256,8 @@ const Create = () => {
               multiple
               defaultValue={[]}
               input={<OutlinedInput label="skill" />}
-              onChange={(e) => setValue('tags', e.target.value as string[])}
-              renderValue={(selected) => (
+              onChange={(e): void => setValue('tags', e.target.value as string[])}
+              renderValue={(selected): ReactNode => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                   {(selected as string[]).map((value: string) => (
                     <Chip key={value} label={value} />

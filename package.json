@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:types": "npx openapi-typescript http://localhost:3500/swagger-json --output ./src/types/api-types.ts",
+    "format": "prettier --write .",
+    "lint-staged": "npx lint-staged"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",

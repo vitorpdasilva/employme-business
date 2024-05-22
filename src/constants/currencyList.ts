@@ -1,8 +1,4 @@
-export type CurrencyList = {
-  name: string
-  value: string
-  symbol: string
-}
+import { CurrencyList } from '~/types'
 export const currencyList: CurrencyList[] = [
   { name: 'USD', value: 'USD', symbol: '$USD' },
   { name: 'EUR', value: 'EUR', symbol: '€' },

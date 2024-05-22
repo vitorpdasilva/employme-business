@@ -1,10 +1,12 @@
-import { userDataStore } from '@/stores'
+import { userStore } from '~/stores'
 
-export const useIsAuthenticated = () => {
-  const user = userDataStore((state: any) => state.user)
-  console.log({ user })
-  return ({
+type UseIsAuthenticatedReturn = {
+  isAuthenticated: boolean
+}
+export const useIsAuthenticated = (): UseIsAuthenticatedReturn => {
+  const user = userStore((state) => state.user)
+
+  return {
     isAuthenticated: !!user,
-    user,
-  })
+  }
 }

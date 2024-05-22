@@ -1,5 +1,5 @@
-import { useIsAuthenticated } from '@/hooks'
-import { userDataStore } from '@/stores'
+import { useIsAuthenticated } from '~/hooks'
+import { userStore } from '~/stores'
 import {
   Alert,
   Avatar,
@@ -26,18 +26,14 @@ type Credentials = {
 const resolver: Resolver<Credentials> = async (values) => {
   return {
     values: values.username ? values : {},
-    errors: !values.username
-      ? {
-        username: { type: 'required', message: 'Username is required' },
-      }
-      : {},
+    errors: !values.username ? { username: { type: 'required', message: 'Username is required' } } : {},
   }
 }
 
-const Login = () => {
+const Login = (): JSX.Element => {
   const { register, handleSubmit } = useForm<Credentials>({ resolver })
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const setUser = userDataStore((state: any) => state.setUser)
+  const setUser = userStore((state) => state.setUser)
   const { isAuthenticated } = useIsAuthenticated()
   const router = useRouter()
 
@@ -55,9 +51,9 @@ const Login = () => {
     }
 
     try {
-      const { userData, tokens } = await fetchApi({ url: '/auth/login', body })
-      if (!userData || !tokens) throw new Error('Something went wrong')
-      setUser(userData, tokens)
+      const { userData } = await fetchApi({ url: '/auth/login', body })
+      if (!userData) throw new Error('Something went wrong')
+      setUser(userData)
       router.push('/')
     } catch (error: any) {
       setErrorMessage(error?.message as ErrorResponse['message'])
@@ -131,7 +127,7 @@ const Login = () => {
               </Grid>
               <Grid item>
                 <Link href="/signup" variant="body2">
-                  {'Don\'t have an account? Sign Up'}
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>

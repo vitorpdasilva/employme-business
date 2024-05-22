@@ -14,7 +14,7 @@ export const InputCurrency = forwardRef<NumericFormatProps, CustomProps>(functio
     <NumericFormat
       {...other}
       getInputRef={ref}
-      onValueChange={(values) => {
+      onValueChange={(values): void => {
         onChange({
           target: {
             name: props.name,
