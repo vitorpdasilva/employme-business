@@ -15,7 +15,7 @@ const routesToBeRedirected = ['/login', '/signup']
 export default function App({ Component, pageProps }: AppProps): JSX.Element {
   const mdTheme = createTheme()
   const router = useRouter()
-  const { isAuthenticated } = useIsAuthenticated()
+  const isAuthenticated = useIsAuthenticated()
 
   useEffect(() => {
     if (isAuthenticated) {
