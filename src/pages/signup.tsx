@@ -1,6 +1,9 @@
-import { Box, Button, Grid, Link, TextField, Typography, styled } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { onSignUp } from '~/queries'
+import { Box, Button, Link, styled, TextField, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { Resolver, useForm } from 'react-hook-form'
+import { useIsAuthenticated } from '~/hooks'
+import { useOnSignUp, SignUpInput } from '~/queries'
 
 const FormWrapper = styled(Box)({
   border: '1px solid #c5c5c5',
@@ -15,57 +18,43 @@ const FormWrapper = styled(Box)({
   },
 })
 
-type Credentials = {
-  name: string
-  email: string
-  password: string
+const resolver: Resolver<SignUpInput> = async (values) => {
+  return {
+    values: values.email && values.name && values.password ? values : {},
+    errors: !values.email ? { email: { type: 'required', message: 'email is required' } } : {},
+  }
 }
 
-const Login = (): JSX.Element => {
-  const { onCall, loading } = onSignUp()
-  const { register, handleSubmit } = useForm<Credentials>()
+const SignUp = (): JSX.Element => {
+  const { onCall, loading } = useOnSignUp()
+  const { register, handleSubmit } = useForm<SignUpInput>({ resolver })
+  const isAuthenticated = useIsAuthenticated()
 
-  const onSubmit = handleSubmit(async (data) => {
-    onCall(data)
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  }, [])
+
+  const onSubmit = handleSubmit(async ({ email, password, name }) => {
+    onCall({ email, password, name })
   })
 
   return (
     <FormWrapper component="form" onSubmit={onSubmit}>
-      <Typography component="h1" variant="h5">
-        Create your company account
+      <TextField {...register('name')} label="Your Name" variant="outlined" required />
+      <TextField sx={{ my: 2 }} {...register('email')} label="email" variant="outlined" required />
+      <TextField {...register('password')} type="password" label="password" variant="outlined" required />
+      <Button disabled={loading} type="submit" variant="contained" sx={{ mt: 2 }}>
+        {loading ? 'Signing up...' : 'Sign up'}
+      </Button>
+      <Typography sx={{ mt: 2 }} variant="caption" color="text.secondary">
+        Already have an account? <Link href="/login">Sign in</Link>
       </Typography>
-      <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 1 }}>
-        <TextField
-          {...register('name', { required: true })}
-          label="Full name"
-          variant="outlined"
-          fullWidth
-          placeholder='e.g. "John Doe"'
-          required
-        />
-        <TextField
-          {...register('email', { required: true })}
-          label="Work Email"
-          variant="outlined"
-          fullWidth
-          placeholder="e.g. email@email.com"
-          required
-        />
-        <TextField {...register('password', { required: true })} label="Password" fullWidth variant="outlined" />
-
-        <Button disabled={loading} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-          Register
-        </Button>
-        <Grid container>
-          <Grid item>
-            <Typography sx={{ mt: 2 }} variant="caption" color="text.secondary">
-              Already have an account? <Link href="/login">Sign in</Link>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
     </FormWrapper>
   )
 }
 
-export default Login
+export default SignUp
